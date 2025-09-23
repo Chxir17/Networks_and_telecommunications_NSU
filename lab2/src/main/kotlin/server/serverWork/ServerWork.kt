@@ -13,7 +13,7 @@ class ServerWork(
 
     fun start() {
         val serverSocket = ServerSocket(config.port)
-        println("Server starts at ${config.port}, files located at: ${Paths.get("uploads").toAbsolutePath()}")
+        println("Server starts at ${config.port}, files located at: ${Paths.get("lab2/uploads").toAbsolutePath()}")
         while (true) {
             val client = serverSocket.accept()
             println("New client: ${client.remoteSocketAddress}")

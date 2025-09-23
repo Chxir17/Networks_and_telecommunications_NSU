@@ -13,7 +13,7 @@ class Handler(
 
     override fun run() {
         val monitor = SpeedMonitor()
-        val uploadsDir = Paths.get("uploads").toAbsolutePath().normalize()
+        val uploadsDir = Paths.get("lab2/uploads").toAbsolutePath().normalize()
         Files.createDirectories(uploadsDir)
 
         try {
