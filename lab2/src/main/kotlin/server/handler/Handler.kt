@@ -1,6 +1,6 @@
-package org.server.handler
+package server.handler
 
-import org.server.speedMonitor.SpeedMonitor
+import server.speedMonitor.SpeedMonitor
 import java.io.*
 import java.net.Socket
 import java.nio.file.*
@@ -49,10 +49,12 @@ class Handler(
                             while (!socket.isClosed && received < fileSize) {
                                 Thread.sleep(updateTime)
                                 val (instant, avg) = monitor.reportSpeeds()
-                                println("Client ${socket.remoteSocketAddress}: " +
+                                println(
+                                    "Client ${socket.remoteSocketAddress}: " +
                                         "Speed: %.2f KB/s, AVG Speed: %.2f KB/s".format(
                                             instant / 1024, avg / 1024
-                                        ))
+                                        )
+                                )
                             }
                         }
 
@@ -68,8 +70,10 @@ class Handler(
                         val success = (received == fileSize)
                         dataOut.writeBoolean(success)
                         dataOut.flush()
-                        println("Client ${socket.remoteSocketAddress}: " +
-                                if (success) "File $safeName received" else "File is damaged")
+                        println(
+                            "Client ${socket.remoteSocketAddress}: " +
+                                if (success) "File $safeName received" else "File is damaged"
+                        )
                     }
                 }
             }
@@ -78,7 +82,8 @@ class Handler(
         } finally {
             try {
                 socket.close()
-            } catch (_: IOException) {}
+            } catch (_: IOException) {
+            }
         }
     }
 }

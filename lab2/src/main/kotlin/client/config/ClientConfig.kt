@@ -1,8 +1,8 @@
-package org.client.config
+package client.config
 
-import org.config.IConfig
+import config.IConfig
 
-data class ClientConfig (
+data class ClientConfig(
     override val port: Int,
     val ip: String,
     val filePath: String,

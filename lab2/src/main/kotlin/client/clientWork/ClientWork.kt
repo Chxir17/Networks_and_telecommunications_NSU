@@ -1,5 +1,6 @@
-package org.client.clientWork
-import org.client.config.ClientConfig
+package client.clientWork
+
+import client.config.ClientConfig
 import java.io.*
 import java.net.Socket
 import java.nio.file.Files

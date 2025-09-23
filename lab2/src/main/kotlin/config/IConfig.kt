@@ -1,5 +1,5 @@
-package org.config
+package config
 
-interface IConfig{
+interface IConfig {
     val port: Int
 }

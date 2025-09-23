@@ -1,4 +1,4 @@
-package org.server.speedMonitor
+package server.speedMonitor
 
 class SpeedMonitor {
     private var totalBytes: Long = 0

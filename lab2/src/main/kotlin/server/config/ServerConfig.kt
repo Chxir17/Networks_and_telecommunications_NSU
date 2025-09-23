@@ -1,5 +1,6 @@
-package org.server.config
-import org.config.IConfig
+package server.config
+
+import config.IConfig
 
 data class ServerConfig(
     override val port: Int,

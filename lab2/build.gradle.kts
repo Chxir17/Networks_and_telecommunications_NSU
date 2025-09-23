@@ -1,21 +1,28 @@
 plugins {
     kotlin("jvm") version "2.1.10"
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
-
-group = "org"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation(kotlin("test"))
+kotlin {
+    jvmToolchain(17)
+}
+application {
+    mainClass.set("ClientStartKt")
 }
 
-tasks.test {
-    useJUnitPlatform()
+dependencies {
+    implementation(kotlin("stdlib"))
 }
-kotlin {
-    jvmToolchain(21)
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "ClientStartKt"
+    }
+    from(sourceSets.main.get().output)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

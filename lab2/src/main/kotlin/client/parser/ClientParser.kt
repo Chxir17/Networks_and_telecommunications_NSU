@@ -1,8 +1,8 @@
-package org.server.parser
+package client.parser
 
-import org.argumentsParser.IParser
-import org.client.config.ClientConfig
-import org.config.IConfig
+import parser.IParser
+import client.config.ClientConfig
+import config.IConfig
 import java.io.File
 import java.net.InetAddress
 import java.net.UnknownHostException
@@ -11,7 +11,7 @@ import java.nio.file.Paths
 
 class ClientParser : IParser {
 
-    private fun isValidIpAddress(ip: String) : Boolean{
+    private fun isValidIpAddress(ip: String): Boolean {
         return try {
             InetAddress.getByName(ip)
             true
@@ -20,7 +20,7 @@ class ClientParser : IParser {
         }
     }
 
-    private fun isValidPort(port: Int?): Boolean{
+    private fun isValidPort(port: Int?): Boolean {
         return port in 1..65534
     }
 
@@ -81,31 +81,38 @@ class ClientParser : IParser {
         while (i < args.size) {
             when (args[i]) {
                 "--ip", "-i" -> {
-                    if (i + 1 >= args.size){
+                    if (i + 1 >= args.size) {
                         error("Usage: ${args[i]} <ip>")
                     }
-                    ip = if(isValidIpAddress(args[i + 1])) args[i + 1] else error("Invalid value for argument: ${args[i]} - invalid address")
+                    ip =
+                        if (isValidIpAddress(args[i + 1])) args[i + 1] else error("Invalid value for argument: ${args[i]} - invalid address")
                     i += 2
                 }
+
                 "--port", "-p" -> {
-                    if (i + 1 >= args.size){
+                    if (i + 1 >= args.size) {
                         error("Usage: ${args[i]} <port>")
                     }
-                    port = if(isValidPort(args[i + 1].toIntOrNull())) args[i+1].toIntOrNull() else error("Invalid value for argument: ${args[i]} - invalid port number")
+                    port =
+                        if (isValidPort(args[i + 1].toIntOrNull())) args[i + 1].toIntOrNull() else error("Invalid value for argument: ${args[i]} - invalid port number")
                     i += 2
                 }
+
                 "--path", "-fp" -> {
                     if (i + 1 >= args.size) {
                         error("Usage: ${args[i]} <path>")
                     }
                     val pathArg = args[i + 1]
                     println(File(pathArg).absolutePath)
-                    filePath = if(isValidFile(pathArg)) File(pathArg).absolutePath else error("Invalid value for argument: ${args[i]} - invalid file path")
+                    filePath =
+                        if (isValidFile(pathArg)) File(pathArg).absolutePath else error("Invalid value for argument: ${args[i]} - invalid file path")
                     i += 2
                 }
-                "--help", "-h" ->{
+
+                "--help", "-h" -> {
                     println("Usage:\nFor help: --help or -h\nTo indicate ip(necessary argument): --ip or -i <ip>\nTo indicate port(necessary argument): --port or -p <port number>\nTo indicate file path: --path or -fp <seconds>")
                 }
+
                 else -> error("Unknown argument: ${args[i]} --help or -h for help")
             }
         }

@@ -1,8 +1,9 @@
-package org.argumentsParser
-import org.config.IConfig
+package parser
+
+import config.IConfig
 
 
 interface IParser {
-    fun parseConfigFile(path: String = "config.cfg") : IConfig
-    fun parseArgs(args: Array<String>) : IConfig
+    fun parseConfigFile(path: String = "config.cfg"): IConfig
+    fun parseArgs(args: Array<String>): IConfig
 }

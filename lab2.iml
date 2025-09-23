@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="lab2" external.linked.project.path="$MODULE_DIR$/lab2" external.root.project.path="$MODULE_DIR$/lab2" external.system.id="GRADLE" external.system.module.group="org" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="lab2" external.linked.project.path="$MODULE_DIR$/lab2" external.root.project.path="$MODULE_DIR$/lab2" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_21" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$/lab2">
       <excludeFolder url="file://$MODULE_DIR$/lab2/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/lab2/build" />
     </content>
-    <orderEntry type="jdk" jdkName="graalvm-jdk-21" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

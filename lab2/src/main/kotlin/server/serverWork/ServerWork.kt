@@ -1,18 +1,19 @@
-package org.server.serverWork
-import org.server.config.ServerConfig
-import org.server.handler.Handler
+package server.serverWork
+
+import server.config.ServerConfig
+import server.handler.Handler
 import java.net.ServerSocket
 import java.nio.file.Paths
 import java.util.concurrent.Executors
 
-class ServerWork (
+class ServerWork(
     private val config: ServerConfig
 ) {
     private val pool = Executors.newCachedThreadPool()
 
     fun start() {
         val serverSocket = ServerSocket(config.port)
-        println("Server starts at $config.port, files located at: ${Paths.get("uploads").toAbsolutePath()}")
+        println("Server starts at ${config.port}, files located at: ${Paths.get("uploads").toAbsolutePath()}")
         while (true) {
             val client = serverSocket.accept()
             println("New client: ${client.remoteSocketAddress}")

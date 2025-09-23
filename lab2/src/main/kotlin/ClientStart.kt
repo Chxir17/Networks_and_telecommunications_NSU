@@ -1,8 +1,6 @@
-package org
-
-import org.client.clientWork.ClientWork
-import org.client.config.ClientConfig
-import org.server.parser.ClientParser
+import client.clientWork.ClientWork
+import client.config.ClientConfig
+import client.parser.ClientParser
 
 fun main(args: Array<String>) {
     val parser = ClientParser()
