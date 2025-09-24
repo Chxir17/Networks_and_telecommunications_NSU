@@ -21,4 +21,4 @@ COPY --from=builder /app/build/libs/*-all.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
 #docker build -t my-kotlin-app:latest .
-#docker run --rm my-kotlin-app --ip 10.9.37.47 --port 6969 -fp /app/hrush.jpg
+#docker run --rm \ -v ~/Downloads:/app/data \ my-kotlin-app:latest \ --ip 10.9.37.47 --port 6969 -fp /app/data/Doc1.docx

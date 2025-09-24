@@ -47,7 +47,7 @@ class Handler(
                         var received: Long = 0
                         val speedThread = thread(start = true) {
                             while (!socket.isClosed && received < fileSize) {
-                                Thread.sleep(updateTime)
+                                Thread.sleep(updateTime * 1000)
                                 val (instant, avg) = monitor.reportSpeeds()
                                 println(
                                     "Client ${socket.remoteSocketAddress}: " +
