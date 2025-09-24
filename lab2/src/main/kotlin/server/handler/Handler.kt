@@ -66,6 +66,16 @@ class Handler(
                             monitor.addBytes(read)
                         }
 
+                        val (instant, avg) = monitor.reportSpeeds()
+                        println(
+                            "Client ${socket.remoteSocketAddress}: " +
+                                "Speed: %.2f KB/s, AVG Speed: %.2f KB/s".format(
+                                    instant / 1024, avg / 1024
+                                )
+                        )
+
+                        speedThread.interrupt()
+
                         speedThread.interrupt()
                         val success = (received == fileSize)
                         dataOut.writeBoolean(success)
