@@ -80,10 +80,7 @@ class Handler(
         } catch (e: Exception) {
             println("${socket.remoteSocketAddress}: ${e.message}")
         } finally {
-            try {
-                socket.close()
-            } catch (_: IOException) {
-            }
+            socket.close()
         }
     }
 }
