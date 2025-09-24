@@ -7,11 +7,7 @@ WORKDIR /app
 COPY build.gradle.kts settings.gradle.kts gradlew gradlew.bat ./
 COPY gradle ./gradle
 RUN ./gradlew build || return 0
-COPY src/main/kotlin/client ./src/main/kotlin/client
-COPY src/main/kotlin/config ./src/main/kotlin/config
-COPY src/main/kotlin/parser ./src/main/kotlin/parser
-COPY src/main/kotlin/ClientStart.kt ./src/main/kotlin/ClientStart.kt
-COPY src/main/resources/config.cfg ./src/main/resources/config.cfg
+COPY /src ./src
 RUN ./gradlew shadowJar
 
 FROM openjdk:17-jdk-slim

@@ -21,7 +21,7 @@ dependencies {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Main-Class"] = "ClientStartKt"
+        attributes["Main-Class"] = "ServerStartKt"
     }
     from(sourceSets.main.get().output)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
