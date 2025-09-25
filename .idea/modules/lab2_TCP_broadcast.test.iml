@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="lab2:test" external.linked.project.path="$MODULE_DIR$/../../lab2" external.root.project.path="$MODULE_DIR$/../../lab2" external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="lab2_TCP_broadcast:test" external.linked.project.path="$MODULE_DIR$/../../lab2_TCP_broadcast" external.root.project.path="$MODULE_DIR$/../../lab2_TCP_broadcast" external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
-      <configuration version="5" platform="JVM 17" allPlatforms="JVM [17]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/../../lab2/src/main/kotlin;/Users/ilyazyryanov/IdeaProjects/networks/lab2/src/test/kotlin">
-        <additionalVisibleModuleNames>lab2:main</additionalVisibleModuleNames>
+      <configuration version="5" platform="JVM 17" allPlatforms="JVM [17]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/../../lab2_TCP_broadcast/src/test/kotlin;/Users/ilyazyryanov/IdeaProjects/networks/lab2_TCP_broadcast/src/main/kotlin">
+        <additionalVisibleModuleNames>lab2_TCP_broadcast:main</additionalVisibleModuleNames>
         <compilerSettings />
         <compilerArguments>
           <flagArguments>
@@ -12,9 +12,9 @@
             <flagArg name="noStdlib" arg="true" />
           </flagArguments>
           <stringArguments>
-            <stringArg name="destination" arg="$MODULE_DIR$/../../lab2/build/classes/kotlin/test" />
+            <stringArg name="destination" arg="$MODULE_DIR$/../../lab2_TCP_broadcast/build/classes/kotlin/test" />
             <stringArg name="jvmTarget" arg="17" />
-            <stringArg name="moduleName" arg="lab2_test" />
+            <stringArg name="moduleName" arg="lab2_TCP_broadcast_test" />
             <stringArg name="apiVersion" arg="2.1" />
             <stringArg name="languageVersion" arg="2.1" />
           </stringArguments>
@@ -35,17 +35,17 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
-    <output-test url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/build/classes/java/test" />
+    <output-test url="file://$MODULE_DIR$/../../lab2_TCP_broadcast/build/classes/kotlin/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/src/test">
-      <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/src/test/kotlin" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/src/test/resources" type="java-test-resource" />
+    <content url="file://$MODULE_DIR$/../../lab2_TCP_broadcast/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcast/src/test/kotlin" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcast/src/test/resources" type="java-test-resource" />
     </content>
     <orderEntry type="jdk" jdkName="openjdk-24" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="lab2.main" />
+    <orderEntry type="module" module-name="lab2_TCP_broadcast.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.1.10" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
   </component>
-  <component name="TestModuleProperties" production-module="lab2.main" />
+  <component name="TestModuleProperties" production-module="lab2_TCP_broadcast.main" />
 </module>

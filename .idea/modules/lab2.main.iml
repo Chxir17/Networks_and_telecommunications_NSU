@@ -2,7 +2,7 @@
 <module external.linked.project.id="lab2:main" external.linked.project.path="$MODULE_DIR$/../../lab2" external.root.project.path="$MODULE_DIR$/../../lab2" external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
-      <configuration version="5" platform="JVM 21" allPlatforms="JVM [21]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/../../lab2/src/main/kotlin;/Users/ilyazyryanov/IdeaProjects/networks/lab2/src/test/kotlin">
+      <configuration version="5" platform="JVM 17" allPlatforms="JVM [17]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/../../lab2/src/main/kotlin;/Users/ilyazyryanov/IdeaProjects/networks/lab2/src/test/kotlin">
         <compilerSettings />
         <compilerArguments>
           <flagArguments>
@@ -12,7 +12,7 @@
           </flagArguments>
           <stringArguments>
             <stringArg name="destination" arg="$MODULE_DIR$/../../lab2/build/classes/kotlin/main" />
-            <stringArg name="jvmTarget" arg="21" />
+            <stringArg name="jvmTarget" arg="17" />
             <stringArg name="moduleName" arg="lab2" />
             <stringArg name="apiVersion" arg="2.1" />
             <stringArg name="languageVersion" arg="2.1" />
@@ -33,12 +33,12 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_21">
-    <output url="file://$MODULE_DIR$/../../lab2/build/classes/kotlin/main" />
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
+    <output url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/build/classes/kotlin/main" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../lab2/src/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../lab2/src/main/kotlin" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../lab2/src/main/resources" type="java-resource" />
+    <content url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/src/main/kotlin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcas/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="jdk" jdkName="openjdk-24" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />

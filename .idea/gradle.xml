@@ -23,6 +23,26 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lab2_TCP_broadcast" />
+        <option name="gradleHome" value="" />
+        <option name="gradleJvm" value="23" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/lab2_TCP_broadcast" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lab3_asynchronous_network" />
+        <option name="gradleHome" value="" />
+        <option name="gradleJvm" value="23" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/lab3_asynchronous_network" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
