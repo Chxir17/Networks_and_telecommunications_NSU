@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/lab1_multicast.iml" filepath="$PROJECT_DIR$/lab1_multicast.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab1_multicast.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lab1_multicast.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab2.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lab2.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab2.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lab2.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab2_TCP_broadcast.iml" filepath="$PROJECT_DIR$/lab2_TCP_broadcast.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab2_TCP_broadcast.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lab2_TCP_broadcast.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab2_TCP_broadcast.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lab2_TCP_broadcast.test.iml" />

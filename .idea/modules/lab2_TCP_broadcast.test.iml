@@ -41,7 +41,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcast/src/test/kotlin" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../lab2_TCP_broadcast/src/test/resources" type="java-test-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="openjdk-24" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="temurin-17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="lab2_TCP_broadcast.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.1.10" level="project" />
