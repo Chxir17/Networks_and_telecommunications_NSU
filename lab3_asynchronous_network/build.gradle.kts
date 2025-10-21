@@ -1,21 +1,20 @@
 plugins {
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "1.9.10"
+    application
 }
 
-group = "org"
-version = "1.0-SNAPSHOT"
+kotlin {
+    jvmToolchain(17)
+}
 
 repositories {
     mavenCentral()
 }
-
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation(kotlin("stdlib"))
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.1")
 }
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
+application {
+    mainClass.set("MainKt")
 }
