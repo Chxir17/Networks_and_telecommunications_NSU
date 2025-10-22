@@ -54,7 +54,7 @@ class KudagoInteraction {
     }
 
 
-    fun  fetchPlaceDetail(placeId: String): CompletableFuture<PlaceDetails> {
+    fun fetchPlaceDetail(placeId: String): CompletableFuture<PlaceDetails> {
         val url = "https://kudago.com/public-api/v1.4/places/$placeId/?fields=id,title,description"
 
         val req = HttpRequest.newBuilder()
@@ -63,20 +63,41 @@ class KudagoInteraction {
             .timeout(Duration.ofSeconds(20))
             .build()
 
-        return httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString()).thenApply { resp ->
-            if (resp.statusCode() !in 200..299) {
-                throw RuntimeException("KudaGo detail error: ${resp.statusCode()} - ${resp.body()}")
-            }
+        return httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+            .thenApply { resp ->
+                if (resp.statusCode() == 503) {
+                    return@thenApply PlaceDetails(
+                        placeId = placeId,
+                        name = "Неизвестное место",
+                        description = "Детали недоступны (ошибка 503)"
+                    )
+                }
 
-            val node = mapper.readTree(resp.body())
-            val id = node.path("id").asText()
-            val name = node.path("title").asText("")
-            var description = node.path("description").asText(null)
-            if (description != null) {
-                description = description.replace(Regex("<[^>]*>"), "").trim()
-            }
+                if (resp.statusCode() !in 200..299) {
+                    throw RuntimeException("KudaGo detail error: ${resp.statusCode()} - ${resp.body()}")
+                }
 
-            PlaceDetails(id, name, description)
-        }
+                val node = mapper.readTree(resp.body())
+                val id = node.path("id").asText()
+                val name = node.path("title").asText("")
+                var description = node.path("description").asText(null)
+                if (description != null) {
+                    description = description.replace(Regex("<[^>]*>"), "").trim()
+                }
+
+                PlaceDetails(
+                    placeId = id,
+                    name = name,
+                    description = description
+                )
+            }
+            .exceptionally { _ ->
+                PlaceDetails(
+                    placeId = placeId,
+                    name = "Неизвестное место",
+                    description = "Детали недоступны"
+                )
+            }
     }
+
 }

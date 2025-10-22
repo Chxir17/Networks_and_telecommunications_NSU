@@ -72,24 +72,30 @@ class GetResult(
     }
 
     fun fetchAggregatedData(location: Location): CompletableFuture<Result> {
-        val weatherF = openWeatherInteraction.fetchWeather(location)
-        val placesF = kudagoInteraction.fetchPlacesNearby(location, radiusMeters = 2000, limit = 10)
 
-        return weatherF.thenCombine(placesF) { weather, places -> Pair(weather, places) }
-            .thenCompose { (weather, places) ->
-                if (places.isEmpty()) {
-                    CompletableFuture.completedFuture(Result(location, weather, emptyList()))
-                } else {
-                    val detailFs = places.map { place ->
-                        kudagoInteraction.fetchPlaceDetail(place.placeId)
-                    }
-                    val allOf = CompletableFuture.allOf(*detailFs.toTypedArray())
-                    allOf.thenApply {
-                        detailFs.map { it.join() }
-                    }.thenApply { details ->
-                        Result(location, weather, details)
+        try {
+
+            val weatherF = openWeatherInteraction.fetchWeather(location)
+            val placesF = kudagoInteraction.fetchPlacesNearby(location, radiusMeters = 2000, limit = 10)
+
+            return weatherF.thenCombine(placesF) { weather, places -> Pair(weather, places) }
+                .thenCompose { (weather, places) ->
+                    if (places.isEmpty()) {
+                        CompletableFuture.completedFuture(Result(location, weather, emptyList()))
+                    } else {
+                        val detailFs = places.map { place ->
+                            kudagoInteraction.fetchPlaceDetail(place.placeId)
+                        }
+                        val allOf = CompletableFuture.allOf(*detailFs.toTypedArray())
+                        allOf.thenApply {
+                            detailFs.map { it.join() }
+                        }.thenApply { details ->
+                            Result(location, weather, details)
+                        }
                     }
                 }
-            }
+        } catch (ex: Exception) {
+            throw RuntimeException("Error fetching data: ${ex.message}")
+        }
     }
 }

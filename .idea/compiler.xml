@@ -9,9 +9,9 @@
       <module name="lab2_TCP_broadcast" target="17" />
       <module name="lab2_TCP_broadcast.main" target="17" />
       <module name="lab2_TCP_broadcast.test" target="17" />
-      <module name="lab3_asynchronous_network" target="23" />
-      <module name="lab3_asynchronous_network.main" target="23" />
-      <module name="lab3_asynchronous_network.test" target="23" />
+      <module name="lab3_asynchronous_network" target="17" />
+      <module name="lab3_asynchronous_network.main" target="17" />
+      <module name="lab3_asynchronous_network.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
