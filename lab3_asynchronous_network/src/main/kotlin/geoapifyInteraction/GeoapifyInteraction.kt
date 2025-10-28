@@ -10,7 +10,7 @@ import java.net.http.HttpResponse
 import java.time.Duration
 import java.util.concurrent.CompletableFuture
 
-class GeoapifyInteraction(val apiKey: String) {
+class GeoapifyInteraction(private val apiKey: String) {
 
     fun searchLocations(query: String): CompletableFuture<List<Location>> {
         val q = URLEncoder.encode(query, "UTF-8")

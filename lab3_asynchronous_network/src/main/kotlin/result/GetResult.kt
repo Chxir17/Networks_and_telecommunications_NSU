@@ -11,9 +11,9 @@ import java.util.concurrent.CompletableFuture
 
 
 class GetResult(
-    val openWeatherInteraction: OpenWeatherInteraction,
-    val geoapifyInteraction: GeoapifyInteraction,
-    val kudagoInteraction: KudagoInteraction
+    private val openWeatherInteraction: OpenWeatherInteraction,
+    private val geoapifyInteraction: GeoapifyInteraction,
+    private val kudagoInteraction: KudagoInteraction
 ) {
 
     fun getResult(query: String) {
@@ -71,7 +71,7 @@ class GetResult(
         println("=".repeat(50))
     }
 
-    fun fetchAggregatedData(location: Location): CompletableFuture<Result> {
+    private fun fetchAggregatedData(location: Location): CompletableFuture<Result> {
 
         try {
 

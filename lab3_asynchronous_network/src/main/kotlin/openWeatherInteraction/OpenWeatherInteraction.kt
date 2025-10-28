@@ -10,10 +10,10 @@ import httpClient
 import mapper
 
 class OpenWeatherInteraction (
-    val apiKey: String
+    private val apiKey: String
 ) {
 
-    fun getFullUrl(lat: Double, lon: Double): String {
+    private fun getFullUrl(lat: Double, lon: Double): String {
         return "https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric&lang=ru"
     }
 
