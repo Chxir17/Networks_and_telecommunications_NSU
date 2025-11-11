@@ -4,6 +4,7 @@
     <bytecodeTargetLevel>
       <module name="lab1_multicast" target="21" />
       <module name="lab1_multicast.main" target="21" />
+      <module name="lab1_multicast.test" target="21" />
       <module name="lab2.main" target="17" />
       <module name="lab2.test" target="17" />
       <module name="lab2_TCP_broadcast" target="17" />

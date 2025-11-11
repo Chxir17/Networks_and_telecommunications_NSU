@@ -5,7 +5,6 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/lab1_multicast" />
-        <option name="gradleHome" value="" />
         <option name="gradleJvm" value="23" />
         <option name="modules">
           <set>
@@ -14,18 +13,7 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/lab2" />
-        <option name="gradleHome" value="" />
-        <option name="gradleJvm" value="23" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$/lab2" />
-          </set>
-        </option>
-      </GradleProjectSettings>
-      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/lab2_TCP_broadcast" />
-        <option name="gradleHome" value="" />
         <option name="gradleJvm" value="23" />
         <option name="modules">
           <set>
@@ -35,7 +23,6 @@
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/lab3_asynchronous_network" />
-        <option name="gradleHome" value="" />
         <option name="gradleJvm" value="23" />
         <option name="modules">
           <set>

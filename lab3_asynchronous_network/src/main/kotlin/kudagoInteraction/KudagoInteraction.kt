@@ -68,8 +68,8 @@ class KudagoInteraction {
                 if (resp.statusCode() == 503) {
                     return@thenApply PlaceDetails(
                         placeId = placeId,
-                        name = "Неизвестное место",
-                        description = "Детали недоступны (ошибка 503)"
+                        name = "Unknown place",
+                        description = "No details available"
                     )
                 }
 
@@ -94,8 +94,8 @@ class KudagoInteraction {
             .exceptionally { _ ->
                 PlaceDetails(
                     placeId = placeId,
-                    name = "Неизвестное место",
-                    description = "Детали недоступны"
+                    name = "Unknown place",
+                    description = "No details available"
                 )
             }
     }

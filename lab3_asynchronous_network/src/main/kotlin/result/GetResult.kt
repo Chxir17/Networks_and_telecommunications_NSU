@@ -64,8 +64,10 @@ class GetResult(
             println("No places found")
         } else {
             result.places.forEachIndexed { i, placeDetail ->
-                println("\n${i + 1}. ${placeDetail.name}")
-                println("Description: ${placeDetail.description ?: "No description"}")
+                if (!placeDetail.name.equals("Unknown place")) {
+                    println("\n${i + 1}. ${placeDetail.name}")
+                    println("Description: ${placeDetail.description ?: "No description"}")
+                }
             }
         }
         println("=".repeat(50))
