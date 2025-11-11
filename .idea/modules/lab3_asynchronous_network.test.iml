@@ -2,7 +2,7 @@
 <module external.linked.project.id="lab3_asynchronous_network:test" external.linked.project.path="$MODULE_DIR$/../../lab3_asynchronous_network" external.root.project.path="$MODULE_DIR$/../../lab3_asynchronous_network" external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
-      <configuration version="5" platform="JVM 17" allPlatforms="JVM [17]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/../../lab3_asynchronous_network/src/main/kotlin;/Users/ilyazyryanov/IdeaProjects/networks/lab3_asynchronous_network/src/test/kotlin">
+      <configuration version="5" platform="JVM 17" allPlatforms="JVM [17]" useProjectSettings="false" pureKotlinSourceFolders="C:\Users\pro10\IdeaProjects\networks\lab3_asynchronous_network\src\test\kotlin;C:\Users\pro10\IdeaProjects\networks\lab3_asynchronous_network\src\main\kotlin">
         <additionalVisibleModuleNames>lab3_asynchronous_network:main</additionalVisibleModuleNames>
         <compilerSettings />
         <compilerArguments>
@@ -36,7 +36,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
-    <output-test url="file://$MODULE_DIR$/../../lab3_asynchronous_network/build/classes/kotlin/test" />
+    <output-test url="file://$MODULE_DIR$/../../lab3_asynchronous_network/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../lab3_asynchronous_network/src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../lab3_asynchronous_network/src/test/kotlin" isTestSource="true" />
