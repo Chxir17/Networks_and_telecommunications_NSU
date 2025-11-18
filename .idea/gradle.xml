@@ -30,6 +30,16 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lab5_SOCKS5_proxy" />
+        <option name="gradleHome" value="" />
+        <option name="gradleJvm" value="23" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/lab5_SOCKS5_proxy" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
