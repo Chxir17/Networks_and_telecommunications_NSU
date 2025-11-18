@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="ERROR">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
         <File name="FileLogger" fileName="app.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"/>
@@ -16,7 +16,7 @@
             <AppenderRef ref="FileLogger"/>
         </Root>
 
-        <!-- Логгер для отдельного пакета -->
+        <!-- Логгер для отдельных пакетов (пример, закомментировано) -->
         <!--
         <Logger name="com.example.myapp" level="info" additivity="false">
             <AppenderRef ref="Console"/>
@@ -24,4 +24,3 @@
         -->
     </Loggers>
 </Configuration>
-

@@ -6,8 +6,11 @@ import kotlin.ranges.contains
 private fun isValidPort(port: Int?): Boolean{
     return port in 1..65534
 }
+@Volatile
+var running = true
 
 fun main(args: Array<String>) {
+
     val logger = LogManager.getLogger("ProxyMain")
     try {
         if (args.size != 1) {
@@ -19,43 +22,32 @@ fun main(args: Array<String>) {
             logger.fatal("Invalid port $port")
             throw IllegalArgumentException("Invalid port $port")
         }
-        logger.info("Starting proxy at port $port...")
+        logger.info("Starting proxy...")
 
-
-        val proxy = Socks5Proxy()
-
-        try {
-            proxy.open(port)
-        } catch (e: Exception) {
-            error("main: error opening proxy on port $port: ${e.message}")
-        }
-
-        thread(start = true, isDaemon = true) {
-            try {
-                proxy.serve()
-            } catch (e: Exception) {
-                error("main: error proxy's serve: ${e.message}")
-            }
-        }
+        val proxy = Socks5Proxy(port)
+        thread(start = true, isDaemon = true) { proxy.serve() }
 
         thread {
-            while (true) {
-                Thread.sleep(50000)
-                println(proxy.stats())
+            while (running) {
+                Thread.sleep(1000)
+                val statistic = proxy.stats()
+                if(statistic != null){
+                    println(statistic)
+                }
             }
         }
 
 
         print("Press Enter to exit...")
         readLine()
-
+        running = false
         try {
             proxy.close()
         } catch (e: Exception) {
             error("main: error proxy's close: ${e.message}")
         }
 
-        Thread.sleep(15_000)
+        Thread.sleep(15)
 
         println(Thread.activeCount())
     }catch (e: Exception) {

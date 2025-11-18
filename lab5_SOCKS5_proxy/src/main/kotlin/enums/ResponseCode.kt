@@ -7,10 +7,8 @@ enum class ResponseCode(val b: Byte) {
     NETWORK_UNREACHABLE(3),
     HOST_UNREACHABLE(4),
     CONNECTION_REFUSED_BY_DEST_HOST(5),
-    TTL_EXPIRED(6),
-    COMMAND_NOT_SUPPORTED(7),
-    PROTOCOL_ERROR((-1).toByte()),
-    ADDRESS_TYPE_NOT_SUPPORTED(9);
+    COMMAND_NOT_SUPPORTED(6),
+    PROTOCOL_ERROR((-1).toByte());
 
     fun toByte(): Byte = b
 }
