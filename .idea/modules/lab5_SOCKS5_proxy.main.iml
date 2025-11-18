@@ -2,7 +2,7 @@
 <module external.linked.project.id="lab5_SOCKS5_proxy:main" external.linked.project.path="$MODULE_DIR$/../../lab5_SOCKS5_proxy" external.root.project.path="$MODULE_DIR$/../../lab5_SOCKS5_proxy" external.system.id="GRADLE" external.system.module.group="org" external.system.module.type="sourceSet" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
-      <configuration version="5" platform="JVM 21" allPlatforms="JVM [21]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/../../lab5_SOCKS5_proxy/src/test/kotlin;/Users/ilyazyryanov/IdeaProjects/Networks_and_telecommunications_NSU/lab5_SOCKS5_proxy/src/main/kotlin">
+      <configuration version="5" platform="JVM 21" allPlatforms="JVM [21]" useProjectSettings="false" pureKotlinSourceFolders="C:\Users\pro10\IdeaProjects\networks\lab5_SOCKS5_proxy\src\main\kotlin;C:\Users\pro10\IdeaProjects\networks\lab5_SOCKS5_proxy\src\test\kotlin">
         <compilerSettings />
         <compilerArguments>
           <flagArguments>
@@ -40,7 +40,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../lab5_SOCKS5_proxy/src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lab5_SOCKS5_proxy/src/main/resources" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="graalvm-jdk-21" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="temurin-21 (2)" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.2.10" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-core:2.25.2" level="project" />
