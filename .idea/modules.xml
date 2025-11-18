@@ -11,6 +11,9 @@
       <module fileurl="file://$PROJECT_DIR$/lab3_asynchronous_network.iml" filepath="$PROJECT_DIR$/lab3_asynchronous_network.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab3_asynchronous_network.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lab3_asynchronous_network.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab3_asynchronous_network.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lab3_asynchronous_network.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lab5_SOCKS5_proxy.iml" filepath="$PROJECT_DIR$/lab5_SOCKS5_proxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab5_SOCKS5_proxy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lab5_SOCKS5_proxy.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lab5_SOCKS5_proxy.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lab5_SOCKS5_proxy.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/networks.iml" filepath="$PROJECT_DIR$/networks.iml" />
     </modules>
   </component>
