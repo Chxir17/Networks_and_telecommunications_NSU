@@ -107,7 +107,7 @@ class ByteSliceMessageSource(
 
                 AddressType.IPV6 -> {
                     if (answer.addressPayload.size < 16) {
-                        throw IOException("invalid ipv6 payload")
+                        throw IOException("Invalid ipv6 payload")
                     }
                     System.arraycopy(answer.addressPayload, 0, tmp, 4, 16)
                     tmp[4 + 16] = ((answer.port ushr 8) and 0xff).toByte()
@@ -115,7 +115,7 @@ class ByteSliceMessageSource(
                     messageSize = 6 + 16
                 }
 
-                else -> throw IOException("unsupported address type")
+                else -> throw IOException("Unsupported address type")
             }
             var wrote = 0
             while (wrote < messageSize) {
@@ -235,7 +235,7 @@ class ByteSliceMessageSource(
                 )
             }
 
-            else -> throw ProtocolException("make client message from bytes: unexpected address type")
+            else -> throw ProtocolException("Make client message from bytes: unexpected address type")
         }
     }
 

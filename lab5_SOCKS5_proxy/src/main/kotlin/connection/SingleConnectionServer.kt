@@ -19,6 +19,7 @@ import java.net.ProtocolException
 import java.net.Socket
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.thread
 
 class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
@@ -34,7 +35,9 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
 
     init {
         tcpClientSocket.soTimeout = 0
-        messageSource = ByteSliceMessageSource(tcpClientSocket.getInputStream(), tcpClientSocket.getOutputStream())
+        messageSource = ByteSliceMessageSource(
+            tcpClientSocket.getInputStream(), tcpClientSocket.getOutputStream()
+        )
     }
 
     override fun run() {
@@ -84,10 +87,16 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
 
     private fun establishTCP(clientMessage: ClientMessage) {
         val targetHost = when (clientMessage.addressType) {
+
             AddressType.DOMAIN_NAME -> String(clientMessage.addressPayload)
-            AddressType.IPV4, AddressType.IPV6 -> clientMessage.addressPayload.joinToString(".") { (it.toInt() and 0xff).toString() }
+
+            AddressType.IPV4, AddressType.IPV6 -> clientMessage.addressPayload.joinToString(".") {
+                (it.toInt() and 0xff).toString()
+            }
+
             else -> throw IOException("Unsupported address type")
         }
+
         logger.info("Connecting to target $targetHost:${clientMessage.port}")
 
         val remoteSocket: Socket
@@ -122,7 +131,7 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
         remoteStats = ConnectionStatistics(remote.inetAddress, remote.port)
         clientStats = ConnectionStatistics(tcpClientSocket.inetAddress, tcpClientSocket.port)
 
-        val waiter = java.util.concurrent.CountDownLatch(1)
+        val waiter = CountDownLatch(1)
 
         // remote -> client
         thread {
@@ -130,13 +139,15 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
                 val buf = ByteArray(1400)
                 while (true) {
                     val read = remoteIn.read(buf)
-                    if (read == -1) break
+                    if (read == -1) {
+                        break
+                    }
                     remoteStats!!.addReadBytes(read.toLong())
                     clientOut.write(buf, 0, read)
                     clientStats!!.addWroteBytes(read.toLong())
                 }
             } catch (e: Exception) {
-                logger.error("Error transmitting data from remote to client - ${e.message}", e)
+                logger.error("Error transmitting data from remote to client - ${e.message}")
             } finally {
                 waiter.countDown()
             }
@@ -147,13 +158,15 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
             val buf = ByteArray(1400)
             while (true) {
                 val read = clientIn.read(buf)
-                if (read == -1) break
+                if (read == -1) {
+                    break
+                }
                 clientStats!!.addReadBytes(read.toLong())
                 remoteOut.write(buf, 0, read)
                 remoteStats!!.addWroteBytes(read.toLong())
             }
         } catch (e: Exception) {
-            logger.error("Error transmitting data from client to remote - ${e.message}", e)
+            logger.error("Error transmitting data from client to remote - ${e.message}")
         }
 
         waiter.await()
@@ -166,7 +179,7 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
             try {
                 sendProtocolError()
             } catch (e: Exception) {
-                logger.error("Failed to send protocol error response - ${e.message}", e)
+                logger.error("Failed to send protocol error response - ${e.message}")
             }
         }
     }
@@ -178,10 +191,12 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
                 is ConnectException -> sendConnectionRefused(clientMessage)
                 is UnknownHostException -> sendHostUnreachable(clientMessage)
                 is SocketTimeoutException -> sendHostUnreachable(clientMessage)
-                else -> sendGeneralFailure(clientMessage.addressPayload, clientMessage.addressType, clientMessage.port)
+                else -> sendGeneralFailure(
+                    clientMessage.addressPayload, clientMessage.addressType, clientMessage.port
+                )
             }
         } catch (e: Exception) {
-            logger.error("Failed to send error response - ${e.message}", e)
+            logger.error("Failed to send error response - ${e.message}")
         }
     }
 
@@ -194,11 +209,19 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
     }
 
     private fun sendRequestGranted(serverIP: ByteArray, addrType: AddressType, port: Int) {
-        sendServerResponse(ServerResponse(SocksVersion.SOCKS5, ResponseCode.REQUEST_GRANTED, addrType, serverIP, port))
+        sendServerResponse(
+            ServerResponse(
+                SocksVersion.SOCKS5, ResponseCode.REQUEST_GRANTED, addrType, serverIP, port
+            )
+        )
     }
 
     private fun sendGeneralFailure(serverIP: ByteArray, addrType: AddressType, port: Int) {
-        sendServerResponse(ServerResponse(SocksVersion.SOCKS5, ResponseCode.GENERAL_FAILURE, addrType, serverIP, port))
+        sendServerResponse(
+            ServerResponse(
+                SocksVersion.SOCKS5, ResponseCode.GENERAL_FAILURE, addrType, serverIP, port
+            )
+        )
     }
 
     private fun sendHostUnreachable(clientMessage: ClientMessage) {
@@ -239,7 +262,11 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
 
     private fun sendProtocolError() {
         val (addrType, ip, port) = tcpLocalAddrInfo(tcpClientSocket)
-        sendServerResponse(ServerResponse(SocksVersion.SOCKS5, ResponseCode.PROTOCOL_ERROR, addrType, ip, port))
+        sendServerResponse(
+            ServerResponse(
+                SocksVersion.SOCKS5, ResponseCode.PROTOCOL_ERROR, addrType, ip, port
+            )
+        )
     }
 
     private fun tcpLocalAddrInfo(socket: Socket): Triple<AddressType, ByteArray, Int> {
@@ -253,8 +280,8 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
     }
 
     fun stats(): Pair<Statistic, Statistic> {
-        val c = clientStats ?: throw Exception("stats: no stats available")
-        val r = remoteStats ?: throw Exception("stats: no stats available")
+        val c = clientStats ?: throw Exception("Stats: no stats available")
+        val r = remoteStats ?: throw Exception("Stats: no stats available")
         return Pair(c.stats(), r.stats())
     }
 
