@@ -9,9 +9,9 @@ import enums.MessageCode
 import enums.ResponseCode
 import enums.SocksVersion
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.ThreadContext
 import proxy.ByteSliceMessageSource
 import statistic.ConnectionStatistics
-import statistic.IStatisticCloser
 import java.io.IOException
 import java.net.ConnectException
 import java.net.InetSocketAddress
@@ -21,10 +21,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.concurrent.thread
 
-class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCloser {
+class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
 
+    companion object {
+        private val logger = LogManager.getLogger(SingleConnectionServer::class.java)
+    }
 
-    private val logger = LogManager.getLogger("SingleConnectionServer $tcpClientSocket")
     private val messageSource: ByteSliceMessageSource
     private val timeoutMs = 10_000
     private var clientStats: ConnectionStatistics? = null
@@ -35,49 +37,48 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
         messageSource = ByteSliceMessageSource(tcpClientSocket.getInputStream(), tcpClientSocket.getOutputStream())
     }
 
-    fun serve() {
-        logger.info("Starting to serve client ${tcpClientSocket.remoteSocketAddress}")
+    override fun run() {
+        ThreadContext.put("clientIp", tcpClientSocket.remoteSocketAddress.toString())
+        logger.info("Starting to serve client")
         try {
             tcpClientSocket.use { client ->
                 val greeting = messageSource.readGreetingMessage()
                 val greetingResponse = GreetingResponse(SocksVersion.SOCKS5, 0)
                 messageSource.writeGreetingResponse(greetingResponse)
-
-                logger.info("Sent greeting response to client ${tcpClientSocket.remoteSocketAddress}")
+                logger.info("Sent greeting response to client")
 
                 val clientMessage = try {
                     messageSource.readClientMessage()
                 } catch (e: Exception) {
-                    logger.error(
-                        "Error reading client message from ${tcpClientSocket.remoteSocketAddress} - ${e.message}",
-                        e
-                    )
+                    logger.error("Error reading client message - ${e.message}")
                     handleMessageSourceError(e)
                     return
                 }
 
-                logger.info("Received client request ${clientMessage.messageCode} from ${tcpClientSocket.remoteSocketAddress}")
+                logger.info("Received client request ${clientMessage.messageCode}")
 
                 when (clientMessage.messageCode) {
                     MessageCode.ESTABLISH_TCP -> {
-                        logger.info("Establishing TCP connection to target from client ${tcpClientSocket.remoteSocketAddress}")
+                        logger.info("Establishing TCP connection to target")
                         establishTCP(clientMessage)
                     }
 
                     MessageCode.BIND_PORT, MessageCode.ASSOCIATE_UDP_PORT -> {
-                        logger.warn("Unsupported command ${clientMessage.messageCode} from client ${tcpClientSocket.remoteSocketAddress}")
+                        logger.warn("Unsupported command ${clientMessage.messageCode}")
                         sendUnsupported(clientMessage)
                     }
 
                     else -> {
-                        logger.warn("Unknown command ${clientMessage.messageCode} from client ${tcpClientSocket.remoteSocketAddress}")
+                        logger.warn("Unknown command ${clientMessage.messageCode}")
                         sendUnsupported(clientMessage)
                     }
                 }
             }
-            logger.info("Finished serving client ${tcpClientSocket.remoteSocketAddress}")
-        }catch (e: Exception){
-            throw e
+            logger.info("Finished serving client")
+        } catch (e: Exception) {
+            logger.error("Exception in client handling: ${e.message}")
+        } finally {
+            ThreadContext.clearAll()
         }
     }
 
@@ -85,9 +86,9 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
         val targetHost = when (clientMessage.addressType) {
             AddressType.DOMAIN_NAME -> String(clientMessage.addressPayload)
             AddressType.IPV4, AddressType.IPV6 -> clientMessage.addressPayload.joinToString(".") { (it.toInt() and 0xff).toString() }
-            else -> throw IOException("unsupported address type")
+            else -> throw IOException("Unsupported address type")
         }
-        logger.info("Connecting to target $targetHost:${clientMessage.port} from client ${tcpClientSocket.remoteSocketAddress}")
+        logger.info("Connecting to target $targetHost:${clientMessage.port}")
 
         val remoteSocket: Socket
         try {
@@ -105,13 +106,13 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
         remoteSocket.use { remote ->
             val (addrType, serverIP, port) = tcpLocalAddrInfo(remote)
             sendRequestGranted(serverIP, addrType, port)
-            logger.info("Request granted, starting data transmission for client ${tcpClientSocket.remoteSocketAddress}")
+            logger.info("Request granted, starting data transmission")
             startTransmitting(remote)
         }
     }
 
     private fun startTransmitting(remote: Socket) {
-        logger.info("Starting data transmission: client ${tcpClientSocket.remoteSocketAddress} <-> remote ${remote.remoteSocketAddress}")
+        logger.info("Starting data transmission client <-> remote")
 
         val clientIn = tcpClientSocket.getInputStream()
         val clientOut = tcpClientSocket.getOutputStream()
@@ -135,7 +136,7 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
                     clientStats!!.addWroteBytes(read.toLong())
                 }
             } catch (e: Exception) {
-                logger.error("Error transmitting data from remote to client ${tcpClientSocket.remoteSocketAddress} - ${e.message}", e)
+                logger.error("Error transmitting data from remote to client - ${e.message}", e)
             } finally {
                 waiter.countDown()
             }
@@ -152,15 +153,15 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
                 remoteStats!!.addWroteBytes(read.toLong())
             }
         } catch (e: Exception) {
-            logger.error("Error transmitting data from client to remote ${tcpClientSocket.remoteSocketAddress} - ${e.message}", e)
+            logger.error("Error transmitting data from client to remote - ${e.message}", e)
         }
 
         waiter.await()
-        logger.info("Data transmission finished for client ${tcpClientSocket.remoteSocketAddress}")
+        logger.info("Data transmission finished")
     }
 
     private fun handleMessageSourceError(err: Exception) {
-        logger.error("Message source error from client ${tcpClientSocket.remoteSocketAddress} - ${err.message}", err)
+        logger.error("Message source error - ${err.message}")
         if (err is ProtocolException) {
             try {
                 sendProtocolError()
@@ -171,7 +172,7 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
     }
 
     private fun handleDialTimeoutError(err: IOException, clientMessage: ClientMessage) {
-        logger.error("Dial error for client ${tcpClientSocket.remoteSocketAddress}: ${err.message}", err)
+        logger.error("Dial error: ${err.message}", err)
         try {
             when (err) {
                 is ConnectException -> sendConnectionRefused(clientMessage)
@@ -180,10 +181,9 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
                 else -> sendGeneralFailure(clientMessage.addressPayload, clientMessage.addressType, clientMessage.port)
             }
         } catch (e: Exception) {
-            logger.error("Failed to send error response to client ${tcpClientSocket.remoteSocketAddress} - ${e.message}", e)
+            logger.error("Failed to send error response - ${e.message}", e)
         }
     }
-
 
     private fun sendServerResponse(answer: ServerResponse) {
         try {
@@ -201,26 +201,14 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
         sendServerResponse(ServerResponse(SocksVersion.SOCKS5, ResponseCode.GENERAL_FAILURE, addrType, serverIP, port))
     }
 
-    private fun sendConnNotAllowed(clientMessage: ClientMessage) {
-        sendServerResponse(ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.NOT_ALLOWED_BY_RULESET,
-                clientMessage.addressType, clientMessage.addressPayload, clientMessage.port
-            )
-        )
-    }
-
-    private fun sendNetworkUnreachable(clientMessage: ClientMessage) {
-        sendServerResponse(ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.NETWORK_UNREACHABLE,
-                clientMessage.addressType, clientMessage.addressPayload, clientMessage.port
-            )
-        )
-    }
-
     private fun sendHostUnreachable(clientMessage: ClientMessage) {
-        sendServerResponse(ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.HOST_UNREACHABLE,
-                clientMessage.addressType, clientMessage.addressPayload, clientMessage.port
+        sendServerResponse(
+            ServerResponse(
+                SocksVersion.SOCKS5,
+                ResponseCode.HOST_UNREACHABLE,
+                clientMessage.addressType,
+                clientMessage.addressPayload,
+                clientMessage.port
             )
         )
     }
@@ -228,8 +216,11 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
     private fun sendConnectionRefused(clientMessage: ClientMessage) {
         sendServerResponse(
             ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.CONNECTION_REFUSED_BY_DEST_HOST,
-                clientMessage.addressType, clientMessage.addressPayload, clientMessage.port
+                SocksVersion.SOCKS5,
+                ResponseCode.CONNECTION_REFUSED_BY_DEST_HOST,
+                clientMessage.addressType,
+                clientMessage.addressPayload,
+                clientMessage.port
             )
         )
     }
@@ -237,8 +228,11 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
     private fun sendUnsupported(clientMessage: ClientMessage) {
         sendServerResponse(
             ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.COMMAND_NOT_SUPPORTED,
-                clientMessage.addressType, clientMessage.addressPayload, clientMessage.port
+                SocksVersion.SOCKS5,
+                ResponseCode.COMMAND_NOT_SUPPORTED,
+                clientMessage.addressType,
+                clientMessage.addressPayload,
+                clientMessage.port
             )
         )
     }
@@ -258,20 +252,18 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : IStatisticCl
         }
     }
 
-    override fun stats(): Pair<Statistic, Statistic> {
+    fun stats(): Pair<Statistic, Statistic> {
         val c = clientStats ?: throw Exception("stats: no stats available")
         val r = remoteStats ?: throw Exception("stats: no stats available")
         return Pair(c.stats(), r.stats())
     }
 
-    override fun close() {
+    fun close() {
         try {
             tcpClientSocket.close()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             logger.fatal("CAN'T CLOSE CLIENT CONNECTION $tcpClientSocket")
             throw e
         }
     }
-
-
 }

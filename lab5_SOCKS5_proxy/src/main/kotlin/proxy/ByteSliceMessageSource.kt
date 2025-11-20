@@ -15,14 +15,15 @@ import java.net.ProtocolException
 
 class ByteSliceMessageSource(
     private val `in`: InputStream,
-    private val out: OutputStream) {
+    private val out: OutputStream
+) {
 
     private val buffer = ByteArray(6 + 1 + 256)
 
     fun readGreetingMessage(): GreetingMessage {
         try {
             var totallyRead = 0
-            var r = `in`.read(buffer, totallyRead, buffer.size - totallyRead)
+            var r = `in`.read(buffer, totallyRead, buffer.size)
             totallyRead += r
             while (!greetingMessageEnoughBytes(buffer.copyOf(totallyRead))) {
                 r = `in`.read(buffer, totallyRead, buffer.size - totallyRead)
@@ -30,7 +31,7 @@ class ByteSliceMessageSource(
             }
             val slice = buffer.copyOf(totallyRead)
             if (!correctGreetingMessage(slice)) {
-                throw ProtocolException("get greeting message: protocol")
+                throw ProtocolException("Get greeting message: protocol")
             }
             return makeMessageFromBytes(slice)
         } catch (e: Exception) {
@@ -46,7 +47,7 @@ class ByteSliceMessageSource(
             out.write(outBuf, 0, 2)
         } catch (e: Exception) {
             throw e
-        }finally {
+        } finally {
             out.flush()
         }
     }
@@ -55,7 +56,7 @@ class ByteSliceMessageSource(
     fun readClientMessage(): ClientMessage {
         try {
             var totallyRead = 0
-            var r = `in`.read(buffer, totallyRead, buffer.size - totallyRead)
+            var r = `in`.read(buffer, totallyRead, buffer.size)
             totallyRead += r
             while (true) {
                 val flag = clientMessageEnoughBytes(buffer.copyOf(totallyRead))
@@ -66,11 +67,11 @@ class ByteSliceMessageSource(
                 totallyRead += r
             }
             val slice = buffer.copyOf(totallyRead)
-            if (!correctClientMessage(slice)){
-                throw ProtocolException("read client message: protocol")
+            if (!correctClientMessage(slice)) {
+                throw ProtocolException("Read client message: protocol")
             }
             return makeClientMessageFromBytes(slice)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw e
         }
     }
@@ -87,7 +88,7 @@ class ByteSliceMessageSource(
             when (answer.addressType) {
                 AddressType.IPV4 -> {
                     if (answer.addressPayload.size < 4) {
-                        throw IOException("invalid ipv4 payload")
+                        throw IOException("Invalid ipv4 payload")
                     }
                     System.arraycopy(answer.addressPayload, 0, tmp, 4, 4)
                     tmp[8] = ((answer.port ushr 8) and 0xff).toByte()
@@ -123,9 +124,9 @@ class ByteSliceMessageSource(
                 out.write(tmp, wrote, toWrite)
                 wrote = end
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw e
-        }finally {
+        } finally {
             out.flush()
         }
     }
@@ -138,10 +139,10 @@ class ByteSliceMessageSource(
     }
 
     private fun correctGreetingMessage(info: ByteArray): Boolean {
-        if (info.isEmpty()){
+        if (info.isEmpty()) {
             return false
         }
-        if (info[0] != SocksVersion.SOCKS5.b){
+        if (info[0] != SocksVersion.SOCKS5.b) {
             return false
         }
         return info.size == 2 + info[1].toInt()
@@ -164,22 +165,23 @@ class ByteSliceMessageSource(
                     val len = if (info.size >= 5) info[4].toInt() else return false
                     info.size >= 6 + 1 + len
                 }
+
                 4.toByte() -> info.size >= 6 + 16
                 else -> false
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw e
         }
     }
 
     private fun correctClientMessage(info: ByteArray): Boolean {
-        if (info[0] != SocksVersion.SOCKS5.b){
+        if (info[0] != SocksVersion.SOCKS5.b) {
             return false
         }
-        if (info[1] != 1.toByte() && info[1] != 2.toByte() && info[1] != 3.toByte()){
+        if (info[1] != 1.toByte() && info[1] != 2.toByte() && info[1] != 3.toByte()) {
             return false
         }
-        if (info[2] != 0.toByte()){
+        if (info[2] != 0.toByte()) {
             return false
         }
         return when (info[3]) {
@@ -188,6 +190,7 @@ class ByteSliceMessageSource(
                 val l = info[4].toInt()
                 info.size == 6 + 1 + l
             }
+
             4.toByte() -> info.size == 6 + 16
             else -> false
         }
@@ -206,6 +209,7 @@ class ByteSliceMessageSource(
                     port
                 )
             }
+
             3.toByte() -> {
                 val len = info[4].toInt()
                 val addr = info.copyOfRange(5, 5 + len)
@@ -218,6 +222,7 @@ class ByteSliceMessageSource(
                     port
                 )
             }
+
             4.toByte() -> {
                 val addr = info.copyOfRange(4, 4 + 16)
                 val port = ((info[4 + 16].toInt() and 0xff) shl 8) or (info[4 + 16 + 1].toInt() and 0xff)
@@ -229,6 +234,7 @@ class ByteSliceMessageSource(
                     port
                 )
             }
+
             else -> throw ProtocolException("make client message from bytes: unexpected address type")
         }
     }

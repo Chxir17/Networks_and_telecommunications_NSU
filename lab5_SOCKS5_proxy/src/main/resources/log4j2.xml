@@ -2,25 +2,33 @@
 <Configuration status="ERROR">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+        <Async name="AsyncConsole">
+            <AppenderRef ref="Console"/>
+        </Async>
+
         <File name="FileLogger" fileName="app.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"/>
         </File>
+        <Async name="AsyncFileLogger">
+            <AppenderRef ref="FileLogger"/>
+        </Async>
     </Appenders>
 
     <Loggers>
         <!-- Логгер для всего приложения -->
         <Root level="INFO">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileLogger"/>
+            <AppenderRef ref="AsyncConsole"/>
+            <AppenderRef ref="AsyncFileLogger"/>
         </Root>
 
         <!-- Логгер для отдельных пакетов (пример, закомментировано) -->
         <!--
         <Logger name="com.example.myapp" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AsyncConsole"/>
         </Logger>
         -->
     </Loggers>
 </Configuration>
+

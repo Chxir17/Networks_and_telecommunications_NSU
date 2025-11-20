@@ -5,13 +5,14 @@ import java.net.InetAddress
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicLong
 
-class ConnectionStatistics(val ip: InetAddress, val port: Int) {
+class ConnectionStatistics(private val ip: InetAddress, private val port: Int) {
+
     private var readBytes: Long = 0
     private var wroteBytes: Long = 0
-    val readSinceLastStats = AtomicLong(0)
-    val wroteSinceLastStats = AtomicLong(0)
-    val startTime: Instant = Instant.now()
-    var lastStatsTime: Instant = Instant.now()
+    private val readSinceLastStats = AtomicLong(0)
+    private val wroteSinceLastStats = AtomicLong(0)
+    private val startTime: Instant = Instant.now()
+    private var lastStatsTime: Instant = Instant.now()
 
     fun stats(): Statistic {
         val res = Statistic(
