@@ -1,7 +1,6 @@
 import org.apache.logging.log4j.LogManager
 import proxy.Socks5Proxy
 import kotlin.concurrent.thread
-import kotlin.ranges.contains
 
 
 fun isValidPort(port: Int): Boolean {

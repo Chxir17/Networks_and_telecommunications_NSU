@@ -7,7 +7,6 @@ import entities.ServerResponse
 import enums.AddressType
 import enums.MessageCode
 import enums.SocksVersion
-import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -84,7 +83,7 @@ class ByteSliceMessageSource(
             tmp[2] = 0
             tmp[3] = answer.addressType.b
 
-            var messageSize = 0
+            var messageSize: Int
             when (answer.addressType) {
                 AddressType.IPV4 -> {
                     if (answer.addressPayload.size < 4) {

@@ -44,8 +44,8 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
         ThreadContext.put("clientIp", tcpClientSocket.remoteSocketAddress.toString())
         logger.info("Starting to serve client")
         try {
-            tcpClientSocket.use { client ->
-                val greeting = messageSource.readGreetingMessage()
+            tcpClientSocket.use {
+                messageSource.readGreetingMessage()
                 val greetingResponse = GreetingResponse(SocksVersion.SOCKS5, 0)
                 messageSource.writeGreetingResponse(greetingResponse)
                 logger.info("Sent greeting response to client")
