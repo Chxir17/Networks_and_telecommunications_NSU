@@ -1,5 +1,6 @@
 import org.apache.logging.log4j.LogManager
 import proxy.Socks5Proxy
+import proxy.statistic.StatisticHandler
 import kotlin.concurrent.thread
 
 
@@ -24,7 +25,7 @@ fun main(args: Array<String>) {
         val port = getPort(args)
         logger.info("Starting proxy...")
         val proxy = Socks5Proxy(port)
-
+        val statistic = StatisticHandler(proxy)
         val shutdownHook = Thread {
             logger.info("Disabling proxy...")
             proxy.running = false
@@ -35,7 +36,7 @@ fun main(args: Array<String>) {
 
         proxy.running = true
         thread { proxy.run() }
-        thread { proxy.runStats() }
+        thread { statistic.run() }
 
         println("Press Enter to exit...")
         readLine()

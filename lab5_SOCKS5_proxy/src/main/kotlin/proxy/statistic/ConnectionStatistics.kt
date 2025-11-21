@@ -1,4 +1,4 @@
-package statistic
+package proxy.statistic
 
 import entities.Statistic
 import java.net.InetAddress

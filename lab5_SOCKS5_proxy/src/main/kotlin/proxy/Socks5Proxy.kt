@@ -1,7 +1,6 @@
 package proxy
 
-import connection.SingleConnectionServer
-import entities.Statistic
+import proxy.connectionHandler.SingleConnection
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -18,7 +17,7 @@ class Socks5Proxy : Runnable {
     private val logger = LogManager.getLogger("ProxySocks5Proxy")
     private var listenAddr: InetSocketAddress? = null
     private var serverSocket: ServerSocket? = null
-    private val statsClosers = ConcurrentHashMap<SingleConnectionServer, Boolean>()
+    internal val statsClosers = ConcurrentHashMap<SingleConnection, Boolean>()
 
     constructor(port: Int) {
         logger.info("Setting up proxy...")
@@ -42,34 +41,20 @@ class Socks5Proxy : Runnable {
         }
     }
 
-    private fun stats(): List<Pair<Statistic, Statistic>>? {
-        try {
-            val res = ArrayList<Pair<Statistic, Statistic>>()
-            for (k in statsClosers.keys) {
-                val (c, r) = k.stats()
-                res.add(Pair(c, r))
-            }
-            return res.ifEmpty { null }
-        } catch (e: Exception) {
-            logger.error("Statistic error ${e.message}")
-            return null
-        }
-    }
-
     private fun handleClient(clientSocket: Socket) {
-        val client = SingleConnectionServer(clientSocket)
+        val client = SingleConnection(clientSocket)
         statsClosers[client] = true
         try {
             client.run()
         } catch (e: IOException) {
-            logger.error("Error serving connection: ${e.message}", e)
+            logger.error("Error serving connection: ${e.message}")
         } finally {
             statsClosers.remove(client)
         }
     }
 
     override fun run() {
-        logger.info("Starting proxy thread")
+        logger.info("Proxy thread started")
         val server = serverSocket ?: throw IOException("Server not opened")
         try {
             while (running) {
@@ -88,21 +73,6 @@ class Socks5Proxy : Runnable {
             throw e
         } finally {
             server.close()
-        }
-    }
-
-    fun runStats() {
-        logger.info("Starting statistic thread")
-        try {
-            while (running) {
-                Thread.sleep(1000)
-                val statistic = stats()
-                if (statistic != null) {
-                    logger.info(statistic)
-                }
-            }
-        } catch (e: Exception) {
-            throw e
         }
     }
 

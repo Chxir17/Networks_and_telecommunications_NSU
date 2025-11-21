@@ -1,17 +1,16 @@
-package connection
+package proxy.connectionHandler
 
 import entities.ClientMessage
 import entities.GreetingResponse
-import entities.ServerResponse
 import entities.Statistic
 import enums.AddressType
 import enums.MessageCode
-import enums.ResponseCode
 import enums.SocksVersion
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.ThreadContext
 import proxy.ByteSliceMessageSource
-import statistic.ConnectionStatistics
+import proxy.connectionHandler.responser.SocksResponseSender
+import proxy.statistic.ConnectionStatistics
 import java.io.IOException
 import java.net.ConnectException
 import java.net.InetSocketAddress
@@ -22,10 +21,10 @@ import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.thread
 
-class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
+class SingleConnection(private val tcpClientSocket: Socket) : Runnable {
 
     companion object {
-        private val logger = LogManager.getLogger(SingleConnectionServer::class.java)
+        private val logger = LogManager.getLogger(SingleConnection::class.java)
     }
 
     private val messageSource: ByteSliceMessageSource
@@ -39,6 +38,8 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
             tcpClientSocket.getInputStream(), tcpClientSocket.getOutputStream()
         )
     }
+
+    private val responseSender = SocksResponseSender(messageSource)
 
     override fun run() {
         ThreadContext.put("clientIp", tcpClientSocket.remoteSocketAddress.toString())
@@ -68,12 +69,12 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
 
                     MessageCode.BIND_PORT, MessageCode.ASSOCIATE_UDP_PORT -> {
                         logger.warn("Unsupported command ${clientMessage.messageCode}")
-                        sendUnsupported(clientMessage)
+                        responseSender.unsupported(clientMessage)
                     }
 
                     else -> {
                         logger.warn("Unknown command ${clientMessage.messageCode}")
-                        sendUnsupported(clientMessage)
+                        responseSender.unsupported(clientMessage)
                     }
                 }
             }
@@ -114,7 +115,7 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
 
         remoteSocket.use { remote ->
             val (addrType, serverIP, port) = tcpLocalAddrInfo(remote)
-            sendRequestGranted(serverIP, addrType, port)
+            responseSender.granted(serverIP, addrType, port)
             logger.info("Request granted, starting data transmission")
             startTransmitting(remote)
         }
@@ -177,7 +178,11 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
         logger.error("Message source error - ${err.message}")
         if (err is ProtocolException) {
             try {
-                sendProtocolError()
+                responseSender.protocolError(
+                    tcpLocalAddrInfo(tcpClientSocket).second,
+                    tcpLocalAddrInfo(tcpClientSocket).first,
+                    tcpLocalAddrInfo(tcpClientSocket).third
+                )
             } catch (e: Exception) {
                 logger.error("Failed to send protocol error response - ${e.message}")
             }
@@ -188,85 +193,18 @@ class SingleConnectionServer(private val tcpClientSocket: Socket) : Runnable {
         logger.error("Dial error: ${err.message}", err)
         try {
             when (err) {
-                is ConnectException -> sendConnectionRefused(clientMessage)
-                is UnknownHostException -> sendHostUnreachable(clientMessage)
-                is SocketTimeoutException -> sendHostUnreachable(clientMessage)
-                else -> sendGeneralFailure(
-                    clientMessage.addressPayload, clientMessage.addressType, clientMessage.port
+                is ConnectException -> responseSender.connectionRefused(clientMessage)
+                is UnknownHostException -> responseSender.hostUnreachable(clientMessage)
+                is SocketTimeoutException -> responseSender.hostUnreachable(clientMessage)
+                else -> responseSender.generalFailure(
+                    clientMessage.addressPayload,
+                    clientMessage.addressType,
+                    clientMessage.port
                 )
             }
         } catch (e: Exception) {
             logger.error("Failed to send error response - ${e.message}")
         }
-    }
-
-    private fun sendServerResponse(answer: ServerResponse) {
-        try {
-            messageSource.writeServerAnswer(answer)
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
-    }
-
-    private fun sendRequestGranted(serverIP: ByteArray, addrType: AddressType, port: Int) {
-        sendServerResponse(
-            ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.REQUEST_GRANTED, addrType, serverIP, port
-            )
-        )
-    }
-
-    private fun sendGeneralFailure(serverIP: ByteArray, addrType: AddressType, port: Int) {
-        sendServerResponse(
-            ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.GENERAL_FAILURE, addrType, serverIP, port
-            )
-        )
-    }
-
-    private fun sendHostUnreachable(clientMessage: ClientMessage) {
-        sendServerResponse(
-            ServerResponse(
-                SocksVersion.SOCKS5,
-                ResponseCode.HOST_UNREACHABLE,
-                clientMessage.addressType,
-                clientMessage.addressPayload,
-                clientMessage.port
-            )
-        )
-    }
-
-    private fun sendConnectionRefused(clientMessage: ClientMessage) {
-        sendServerResponse(
-            ServerResponse(
-                SocksVersion.SOCKS5,
-                ResponseCode.CONNECTION_REFUSED_BY_DEST_HOST,
-                clientMessage.addressType,
-                clientMessage.addressPayload,
-                clientMessage.port
-            )
-        )
-    }
-
-    private fun sendUnsupported(clientMessage: ClientMessage) {
-        sendServerResponse(
-            ServerResponse(
-                SocksVersion.SOCKS5,
-                ResponseCode.COMMAND_NOT_SUPPORTED,
-                clientMessage.addressType,
-                clientMessage.addressPayload,
-                clientMessage.port
-            )
-        )
-    }
-
-    private fun sendProtocolError() {
-        val (addrType, ip, port) = tcpLocalAddrInfo(tcpClientSocket)
-        sendServerResponse(
-            ServerResponse(
-                SocksVersion.SOCKS5, ResponseCode.PROTOCOL_ERROR, addrType, ip, port
-            )
-        )
     }
 
     private fun tcpLocalAddrInfo(socket: Socket): Triple<AddressType, ByteArray, Int> {
