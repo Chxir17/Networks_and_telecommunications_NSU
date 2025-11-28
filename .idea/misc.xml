@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/lab1_multicast" />
     <file type="web" url="file://$PROJECT_DIR$/lab2_TCP_broadcas" />
     <file type="web" url="file://$PROJECT_DIR$/lab2_TCP_broadcast" />
     <file type="web" url="file://$PROJECT_DIR$/lab3_asynchronous_network" />
+    <file type="web" url="file://$PROJECT_DIR$/lab4_network_snake" />
     <file type="web" url="file://$PROJECT_DIR$/lab5_SOCKS5_proxy" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_25" project-jdk-name="graalvm-jdk-21" project-jdk-type="JavaSDK">
