@@ -154,7 +154,7 @@ class SingleConnection(private val tcpClientSocket: Socket) : Runnable {
             }
         }
 
-        // client -> remote (current thread)
+        // client -> remote
         try {
             val buf = ByteArray(1400)
             while (true) {
