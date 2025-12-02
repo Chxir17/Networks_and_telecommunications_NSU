@@ -58,6 +58,7 @@ class ByteSliceMessageSource(
             var r = `in`.read(buffer, totallyRead, buffer.size)
             totallyRead += r
             while (true) {
+                //VER, CMD, RSV, ATYP, DST.ADDR, DST.PORT
                 val flag = clientMessageEnoughBytes(buffer.copyOf(totallyRead))
                 if (flag) {
                     break
@@ -170,6 +171,33 @@ class ByteSliceMessageSource(
             }
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+
+    private fun clientMessageEnoughBytes(info: ByteArray, bigAddress: Boolean): Boolean {
+        if (!bigAddress){
+            return clientMessageEnoughBytes(info)
+        }
+        //4 байта, чтобы прочитать ATYP
+        if (info.size < 4) return false
+        val atyp = info[3]
+        return when (atyp) {
+            1.toByte() -> {
+                // IPv4: header(4) + addr(4) + port(2) = 10
+                info.size >= 4 + 4 + 2
+            }
+            3.toByte() -> {
+                // Domain: header(4) + len(1) + domain(len) + port(2)
+                if (info.size < 5) return false
+                val len = info[4].toInt() and 0xFF
+                info.size >= 4 + 1 + len + 2
+            }
+            4.toByte() -> {
+                // IPv6: header(4) + addr(16) + port(2) = 22
+                info.size >= 4 + 16 + 2
+            }
+            else -> false
         }
     }
 
