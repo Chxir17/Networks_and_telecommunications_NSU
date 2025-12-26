@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: io.arrow-kt:arrow-fx-coroutines-jvm:1.2.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="io.arrow-kt" artifactId="arrow-fx-coroutines-jvm" version="1.2.0" baseVersion="1.2.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.arrow-kt/arrow-fx-coroutines-jvm/1.2.0/53eacf54746e5be4c2337fa9c1e0389aff34b5db/arrow-fx-coroutines-jvm-1.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
