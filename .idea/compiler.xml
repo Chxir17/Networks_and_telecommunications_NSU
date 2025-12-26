@@ -13,6 +13,9 @@
       <module name="lab3_asynchronous_network" target="17" />
       <module name="lab3_asynchronous_network.main" target="17" />
       <module name="lab3_asynchronous_network.test" target="17" />
+      <module name="lab4_network_snake" target="17" />
+      <module name="lab4_network_snake.main" target="17" />
+      <module name="lab4_network_snake.test" target="17" />
       <module name="lab5_SOCKS5_proxy" target="21" />
       <module name="lab5_SOCKS5_proxy.main" target="21" />
       <module name="lab5_SOCKS5_proxy.test" target="21" />
