@@ -24,6 +24,7 @@ class ProtobufJavaMulticastUDPSuspendMessageSenderReader(
 
     init {
         val allNifaces = NetworkInterface.getNetworkInterfaces()!!
+        multicastSocket.timeToLive = 100
         niface = allNifaces.toList().find { networkInterface ->
             if (networkInterface.isLoopback) {
                 return@find false
@@ -70,13 +71,26 @@ class ProtobufJavaMulticastUDPSuspendMessageSenderReader(
 
     @Throws(IOException::class)
     override suspend fun send(bytes: ByteArray, targetSourceHost: SourceHost) {
-        val sendDatagramPacket = DatagramPacket(
-            bytes,
-            bytes.size,
-            InetSocketAddress(targetSourceHost.ip, targetSourceHost.port)
-        )
-        withContext(Dispatchers.IO) {
-            multicastSocket.send(sendDatagramPacket)
+        // ❗ запрещаем unicast через multicast сокет
+        if (!InetAddress.getByName(targetSourceHost.ip).isMulticastAddress) {
+            val socket = DatagramSocket()
+            socket.send(
+                DatagramPacket(
+                    bytes,
+                    bytes.size,
+                    InetSocketAddress(targetSourceHost.ip, targetSourceHost.port)
+                )
+            )
+            socket.close()
+            return
         }
+
+        multicastSocket.send(
+            DatagramPacket(
+                bytes,
+                bytes.size,
+                InetSocketAddress(targetSourceHost.ip, targetSourceHost.port)
+            )
+        )
     }
 }
